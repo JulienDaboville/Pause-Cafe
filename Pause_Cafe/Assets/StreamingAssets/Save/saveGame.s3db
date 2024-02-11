@@ -1,0 +1,20 @@
+BEGIN TRANSACTION;
+CREATE TABLE IF NOT EXISTS "players" (
+	"player"	INTEGER
+);
+CREATE TABLE IF NOT EXISTS "characters" (
+	"class"	INTEGER,
+	"team"	INTEGER,
+	"x"	INTEGER,
+	"y"	INTEGER,
+	"pa"	INTEGER,
+	"hp"	INTEGER,
+	"skillA"	INTEGER,
+	"directionF"	INTEGER
+);
+CREATE TABLE IF NOT EXISTS "board" (
+	"IDhexa"	INTEGER UNIQUE,
+	"type"	INTEGER,
+	PRIMARY KEY("IDhexa")
+);
+COMMIT;

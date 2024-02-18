@@ -31,7 +31,7 @@ namespace Characters
         public enum AttackEffect : byte
         {
             DAMAGE, RANDOM_DAMAGE, HEAL, MASSIVE_HEAL, PA_BUFF, DMG_BUFF, STUN, DOOM, SHIELD, HEALTH_STEALING, FREEZE, DAMAGE_OVER_TIME,
-            LIGHNING
+            LIGHNING,CHARGE,HOWL
         }
         // Attack 
         public class Attack
@@ -106,7 +106,7 @@ namespace Characters
             list.Add(new CharacterDB(11, 2, 3, 6, new Attack(4, 0, false, true, false, AttackEffect.DMG_BUFF,1),new Attack(4, 2, false, true, false, AttackEffect.PA_BUFF, 1), new Attack(1, 1, true, false, false, AttackEffect.DOOM, 2), new Attack(1, 1, true, false, false, AttackEffect.RANDOM_DAMAGE, 3))); // ENVOUTEUR
             list.Add(new CharacterDB(14, 2, 4, 4, new Attack(1, 1, true, false, false, AttackEffect.DAMAGE, 2), new Attack(2, 1, true, false, false, AttackEffect.DAMAGE, 3), new Attack(3, 1, true, false, false, AttackEffect.LIGHNING, 4), new Attack(1, 1, true, false, false, AttackEffect.RANDOM_DAMAGE, 3))); // VALKYRIE		
             list.Add(new CharacterDB(11, 2, 3, 4, new Attack(2, 0, true, false, false, AttackEffect.DAMAGE, 1), new Attack(3, 0, true, false, false, AttackEffect.DAMAGE, 4), new Attack(1, 0, true, false, false, AttackEffect.FREEZE, 0), new Attack(1, 1, true, false, false, AttackEffect.RANDOM_DAMAGE, 3))); // DRUIDE
-            list.Add(new CharacterDB(11, 2, 3, 4, new Attack(2, 0, true, false, false, AttackEffect.DAMAGE, 2), new Attack(3, 0, false, false, true, AttackEffect.HEAL, 3), new Attack(1, 0, true, false, false, AttackEffect.DAMAGE, 5), new Attack(10, 1, false, false, false, AttackEffect.DAMAGE, 1))); // BUCHERON
+            list.Add(new CharacterDB(11, 2, 3, 4, new Attack(10, 0, true, false, false, AttackEffect.DAMAGE, 2), new Attack(1, 0, false, true, false, AttackEffect.HOWL, 4), new Attack(1, 0, true, false, false, AttackEffect.DAMAGE, 5), new Attack(10, 1, false, false, false, AttackEffect.CHARGE, 10))); // BUCHERON
 
         }
     }
@@ -147,6 +147,7 @@ namespace Characters
         public GameObject go;
 
         public bool skillAvailable3;
+        public CharsDB.CharacterDB myCharClass;
 
         //Constructor
         //Author : ?
@@ -156,7 +157,7 @@ namespace Characters
         {
             this.charClass = charClass;
             this.roleCharacter = roleCharacter;
-            CharsDB.CharacterDB myCharClass = CharsDB.list[(int)charClass];
+            myCharClass = CharsDB.list[(int)charClass];
             HPmax = myCharClass.maxHP; HP = HPmax;
             PA = myCharClass.basePA;
             characterPA = myCharClass.basePA;
@@ -214,6 +215,10 @@ namespace Characters
 
             this.go = null;
         }
+
+
+
+       
 
         //Override of the equals method
         // /!\ Needed to sort characters 

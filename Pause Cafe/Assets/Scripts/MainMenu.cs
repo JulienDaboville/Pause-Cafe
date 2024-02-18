@@ -640,7 +640,7 @@ public class MainMenu : MonoBehaviour
         float y = vGuerrier.y;
         float z = vGuerrier.z;
 
-        rectTransform = buttonCharCards[8].GetComponent<RectTransform>(); //NAIN 
+        rectTransform = buttonCharCards[8].GetComponent<RectTransform>(); //BUCHERON
         rectTransform.position = new Vector3(buttonCharCards[8].transform.position.x, y, z);
 
         rectTransform = buttonCharCards[6].GetComponent<RectTransform>(); //VALKYRIE

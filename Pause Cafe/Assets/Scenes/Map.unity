@@ -8335,7 +8335,7 @@ MonoBehaviour:
   characterTemplate: {fileID: 6855172661285067377, guid: 5a266099b7a13cb4094badd16472907b,
     type: 3}
   characterTemplateModels:
-  - {fileID: 919132149155446097, guid: 93a41e9c200f94b0f89511ea97387f8a, type: 3}
+  - {fileID: 1058977558163333088, guid: 194b01e57529141d8a1d07cacba1c0e1, type: 3}
   - {fileID: 6685854704115936369, guid: 1a541f2bd3c8e574d8e05526663a9179, type: 3}
   - {fileID: 868732720404503822, guid: 66543a93bb5cc074eb2588bfa6caa51c, type: 3}
   - {fileID: 4339378751603149778, guid: 5686200921b3aba43a942ab7f0595e09, type: 3}

@@ -128,7 +128,7 @@ public class MainGame : MonoBehaviour
     public List<(Character chr, ActionAIPos act)> decisionSequenceCPU; // CPU decisions
     public Slider slider;
     public int countTurn;
-
+    public Boolean charge = false;
     public Material pathDisplayMat;
     public Material bonusDisplayMat;
 
@@ -358,6 +358,7 @@ public class MainGame : MonoBehaviour
         toggleLockedCamera.isOn = lockedCamera;
         AIwaitingTime = lockedCamera ? 0 : 20;
         Debug.Log("Debut de la partie");
+        
     }
 
     // Update is called once per frame
@@ -528,7 +529,7 @@ public class MainGame : MonoBehaviour
                     {
                         currentCharacterText.text = "Voici les actions réalisables par le Bucheron: \n" +
                                                     "\n 1) Déplacement : Vous pouvez vous déplacer de " + CharsDB.list[(int)currentCharControlled.charClass].basePM.ToString() + " cases \n" +
-                                                    "\n 2) Compétence 2 : EVIL AURA --> permet de maudire un adversaire en lui ôtant " + CharsDB.list[(int)currentCharControlled.charClass].basicAttack.ToString() + " points de dégâts lors de sa prochaine attaque (portée : " + CharsDB.list[(int)currentCharControlled.charClass].skill_2.range.ToString() + ") \n" +
+                                                    "\n 2) Attaque de base :  " + CharsDB.list[(int)currentCharControlled.charClass].basicAttack.ToString() + " points de dégâts lors de sa prochaine attaque (portée : " + CharsDB.list[(int)currentCharControlled.charClass].basicAttack.range.ToString() + ") \n" +
 
                                                     "\n 3) Cri de guerre : augmente ses PV et ses dégats de " + CharsDB.list[(int)currentCharControlled.charClass].skill_1.effectValue.ToString() + " \n" +
                                                     "\n 4) Attaque lourde a la hache de : + " + CharsDB.list[(int)currentCharControlled.charClass].skill_2.effectValue.ToString() + " dégats \n" +
@@ -643,10 +644,17 @@ public class MainGame : MonoBehaviour
         cameraPos.position = new Vector3(cameraPos.position.x * 0.85f + cameraPosGoal.x * 0.15f, cameraPos.position.y * 0.85f + cameraPosGoal.y * 0.15f, cameraPos.position.z * 0.85f + cameraPosGoal.z * 0.15f);
 
         //Edited by Socrate Louis Deriza L3C1
+        //Edited by Julien L3L1
         // MAIN GAME LOOP
         if (winner == -1)
         {
-            if (pathWalk != null)
+           
+        if (pathWalk != null && charge)
+            {
+                print("CHARGE");
+                walkingAnimation(); //charge
+            }
+            else if (pathWalk != null)
             {
                 // Walking animation when going from an hexa to another
                 walkingAnimation();
@@ -767,11 +775,13 @@ public class MainGame : MonoBehaviour
                         {
                             switch (actionType)
                             {
-                                case ActionType.MOVE: 
-                                    int nbCase = actionMove(hexaHovered);
+                                case ActionType.MOVE:
+
                                     //Added by Socrate Louis Deriza, L3C1
-                                    getEndGameDataCharacterFromTheList(currentCharControlled).addAction(ActionType.MOVE);
-                                    getEndGameDataCharacterFromTheList(currentCharControlled).addMovement(nbCase);                                    
+                                    //   getEndGameDataCharacterFromTheList(currentCharControlled).addAction(ActionType.MOVE);
+                                    int nbCase = actionMove(hexaHovered);
+                              //      new Hexa(HexaType.GROUND, 10, 10)
+                               //     getEndGameDataCharacterFromTheList(currentCharControlled).addMovement(nbCase);                                    
                                     break;
                                 case ActionType.ATK1:
                                     int dmg = actionUseAttack(actionType, hexaHovered);
@@ -1952,8 +1962,8 @@ public class MainGame : MonoBehaviour
         CharsDB.Attack attackUsed_;
         if (attack == ActionType.ATK1) attackUsed_ = CharsDB.list[(int)currentCharControlled.charClass].basicAttack;
         else if (attack == ActionType.ATK2) { attackUsed_ = CharsDB.list[(int)currentCharControlled.charClass].skill_1; }
-        else if (attack == ActionType.ATK3) { attackUsed_ = CharsDB.list[(int)currentCharControlled.charClass].skill_2; }
-        else { attackUsed_ = CharsDB.list[(int)currentCharControlled.charClass].skill_3; } //ATK3, by Youcef MEDILEH, L3C1
+        else if (attack == ActionType.ATK3) { attackUsed_ = CharsDB.list[(int)currentCharControlled.charClass].skill_2; }//ATK3, by Youcef MEDILEH, L3C1
+        else { attackUsed_ = CharsDB.list[(int)currentCharControlled.charClass].skill_3; } 
         Debug.Log(CharsDB.list[(int)currentCharControlled.charClass]);
         //Use the attack if it's possible
         if (hexaDestination != null && hexaGrid.hexaInSight(currentCharControlled.x, currentCharControlled.y, hexaDestination.x, hexaDestination.y, attackUsed_.range))
@@ -1975,7 +1985,12 @@ public class MainGame : MonoBehaviour
             }
             // Attack animation
             Animator animator = currentCharControlled.go.transform.GetChild(1).GetComponent<Animator>();
-            if (animator)
+            if (animator 
+                && attack == ActionType.ATK4 && currentCharControlled.charClass == CharClass.BUCHERON) // action de charge
+            {
+               //Animation quand il fait la charge
+            }
+            else if (animator)
             {
                 animator.SetTrigger("Attack1Trigger");
             }
@@ -2037,6 +2052,7 @@ public class MainGame : MonoBehaviour
     }
 
     //Use attack
+    //edited by Julien L3L1
     //edited by GOUVEIA Klaus, group: L3Q1
     //edited by MEDILEH Youcef, group: L3C1 14/03/2023
     // - Added the possibility to use the skill 2
@@ -2090,6 +2106,32 @@ public class MainGame : MonoBehaviour
         {
             HandlePoison();
         }
+        //Added by Julien L3L1
+
+        if (attackUsedAttack.attackEffect == CharsDB.AttackEffect.CHARGE)
+        {
+            print("CHARGE 2");
+            getHoveredHexa();
+            print("hexahovered charge x"+hexaHovered.x+"y"+hexaHovered.y);
+            int nbCase = actionMove(hexaHovered);
+            currentCharControlled.updatePos(pathWalk[pathWalk.Count - 1].x, pathWalk[pathWalk.Count - 1].y, hexaGrid);
+            //    walkingAnimation();
+            //Added by Socrate Louis Deriza, L3C1
+            //     getEndGameDataCharacterFromTheList(currentCharControlled).addAction(ActionType.MOVE);
+            //    getEndGameDataCharacterFromTheList(currentCharControlled).addMovement(nbCase);
+
+            //   int nbCase = actionMove(hexaHovered);
+
+
+            // getEndGameDataCharacterFromTheList(currentCharControlled).addAction(ActionType.MOVE);
+            //   getEndGameDataCharacterFromTheList(currentCharControlled).addMovement(nbCase);
+
+            //     charge = true;
+        }
+
+
+
+
 
 
         //Give attack effects
@@ -2099,10 +2141,20 @@ public class MainGame : MonoBehaviour
             switch (attackUsedAttack.attackEffect)
             {
                 case CharsDB.AttackEffect.DAMAGE:
-                    {
-                        HandleDamage(c);
-                    }
+                {
+                HandleDamage(c); }
                     break;
+
+                //Added by Julien L3L1
+
+                case CharsDB.AttackEffect.HOWL:
+
+                    {
+                HandleHowl(c);
+                break;
+
+                    }
+                   
                 // Author: CROUZET Oriane, group : L3C1
                 // Date : 14/03/2023
 
@@ -2285,6 +2337,25 @@ public class MainGame : MonoBehaviour
 
         currentCharControlled.totalDamage += heal;
         c.HP += heal;
+    }
+
+    //added by Julien L3L1
+
+    private void HandleHowl(Character c)
+    {
+        GameObject dmgValueDisp = GameObject.Instantiate(damageValueDisplay);
+        dmgValueDisp.GetComponent<DamageValueDisplay>().camera_ = cameraPos;
+        int heal = c.myCharClass.basicAttack.effectValue;
+    //    int heal = 10;
+        if (heal > c.HPmax - c.HP) heal = c.HPmax - c.HP;
+        dmgValueDisp.GetComponent<DamageValueDisplay>().setValue(c.x, c.y, "HURLEMENT", Color.green, 60);
+        c.HP += attackUsedAttack.effectValue;
+        print("Affichage Howl");
+        print(c.HP);
+        c.myCharClass.basicAttack.effectValue += attackUsedAttack.effectValue;
+        print(c.myCharClass.basicAttack.effectValue);
+
+
     }
 
     // Author: MEDILEH Youcef, groupe : L3C1
@@ -2952,7 +3023,9 @@ public class MainGame : MonoBehaviour
         if ((actionType == ActionType.ATK1)) iChildrenToSelect = 0;
         else if ((actionType == ActionType.ATK2)) iChildrenToSelect = 1;
         else if ((actionType == ActionType.ATK3)) iChildrenToSelect = 2;
-        else if ((actionType == ActionType.SKIP)) iChildrenToSelect = 3;
+        else if ((actionType == ActionType.ATK4)) iChildrenToSelect = 3;
+
+        else if ((actionType == ActionType.SKIP)) iChildrenToSelect = 4;
         else iChildrenToSelect = 4;
         for (int i = 0; i < 5; i++)
         {

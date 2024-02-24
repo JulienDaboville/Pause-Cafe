@@ -13,6 +13,8 @@ using Stats;
 using Mono.Data.Sqlite;
 using System.Data;
 using System;
+using UnityEngine.EventSystems;
+using System.Collections;
 
 // ##################################################################################################################################################
 // MAIN
@@ -146,6 +148,7 @@ public class MainGame : MonoBehaviour
     public Slider TimeRoleTureSlider;
     public float MaxTimeNum = 30;
     private float TimeNum;
+    public float tour = 0;
 
 
     //Awake is called before Start
@@ -216,8 +219,8 @@ public class MainGame : MonoBehaviour
             startGameData = new StartGameData();
             startGameData.loadSave = false;
             startGameData.charsTeam1 = new List<CharClass>();
-            startGameData.charsTeam1.Add(CharClass.VOLEUR);
-            startGameData.charsTeam1.Add(CharClass.GUERRIER);
+            startGameData.charsTeam1.Add(CharClass.MAGE);
+            startGameData.charsTeam1.Add(CharClass.BUCHERON);
             startGameData.charsTeam2 = new List<CharClass>();
             startGameData.charsTeam2.Add(CharClass.SOIGNEUR);
             startGameData.charsTeam2.Add(CharClass.ARCHER);
@@ -671,6 +674,7 @@ public class MainGame : MonoBehaviour
             }
             else if (!pauseMenu)
             {
+               
                 PlayerType currentPlayerType = whoControlsThisChar(currentCharControlled);
                 // ACTIONS FOR HUMAN PLAYERS
                 if (currentPlayerType == PlayerType.HUMAN)
@@ -683,6 +687,7 @@ public class MainGame : MonoBehaviour
                     // W Key : Move
                     if (Input.GetKeyDown(KeyCode.W))
                     {
+                       
                         actionType = ActionType.MOVE;
                         updateMouseHover = true; updateUI = true;
                     }
@@ -690,6 +695,7 @@ public class MainGame : MonoBehaviour
                     // X Key : Attack
                     if (Input.GetKeyDown(KeyCode.X))
                     {
+                      
                         actionType = ActionType.ATK1;
                         updateMouseHover = true; updateUI = true;
                     }
@@ -697,6 +703,7 @@ public class MainGame : MonoBehaviour
                     // C Key : Skill
                     if (Input.GetKeyDown(KeyCode.C))
                     {
+                      
                         if (currentCharControlled.skillAvailable)
                             actionType = ActionType.ATK2;
 
@@ -708,6 +715,7 @@ public class MainGame : MonoBehaviour
                     //Edited by L3C1 CROUZET Oriane
                     if (Input.GetKeyDown(KeyCode.V))
                     {
+                        
                         if (currentCharControlled.skillAvailable2)
                             actionType = ActionType.ATK3;
 
@@ -718,6 +726,7 @@ public class MainGame : MonoBehaviour
                     // Author :Julien D'aboville L3L1
                     if (Input.GetKeyDown(KeyCode.F))
                     {
+                       
                         if (currentCharControlled.skillAvailable3)
                             actionType = ActionType.ATK4;
 
@@ -727,6 +736,7 @@ public class MainGame : MonoBehaviour
                     // B Key : Skip
                     if (Input.GetKeyDown(KeyCode.B))
                     {
+                       
                         currentCharControlled.PA = 0;
                         nextTurn();
                     }
@@ -1154,6 +1164,7 @@ public class MainGame : MonoBehaviour
                 displayActionButtons();
             }
         }
+
 
         updateMouseHover = false;
         updateUI = false;
@@ -2137,6 +2148,16 @@ public class MainGame : MonoBehaviour
         //Give attack effects
         foreach (Character c in hits)
         {
+            print("attack");
+
+
+            HandleShield(c);
+
+           
+           
+
+
+
             //If the attack effect is damage, give damages
             switch (attackUsedAttack.attackEffect)
             {
@@ -2144,6 +2165,32 @@ public class MainGame : MonoBehaviour
                 {
                 HandleDamage(c); }
                     break;
+                //Added by Julien L3L1
+
+
+                case CharsDB.AttackEffect.INVISIBLE:
+                    {
+                        print("invisible2");
+                        HandleInvisible(c);
+                    }
+                    break;
+                //Added by Julien L3L1
+
+                case CharsDB.AttackEffect.STORM:
+                    {
+                        print("storm 2");
+                        HandleStorm(c);
+
+                    }
+                    break;
+
+                //Added by Julien L3L1
+                case CharsDB.AttackEffect.SHIELD:
+                    {
+                        EnableShield(c);
+                    }
+                    break;
+
 
                 //Added by Julien L3L1
 
@@ -2151,10 +2198,23 @@ public class MainGame : MonoBehaviour
 
                     {
                 HandleHowl(c);
-                break;
+               
 
                     }
-                   
+                    break;
+
+                //Added by Julien L3L1
+
+
+                case CharsDB.AttackEffect.RAGE:
+
+                    {
+                        HandleRage(c);
+
+
+                    }
+                    break;
+
                 // Author: CROUZET Oriane, group : L3C1
                 // Date : 14/03/2023
 
@@ -2345,18 +2405,113 @@ public class MainGame : MonoBehaviour
     {
         GameObject dmgValueDisp = GameObject.Instantiate(damageValueDisplay);
         dmgValueDisp.GetComponent<DamageValueDisplay>().camera_ = cameraPos;
-        int heal = c.myCharClass.basicAttack.effectValue;
-    //    int heal = 10;
+        int heal = attackUsedAttack.effectValue;
+        int damageBuff= attackUsedAttack.effectValue;
+        //    int heal = 10;
         if (heal > c.HPmax - c.HP) heal = c.HPmax - c.HP;
         dmgValueDisp.GetComponent<DamageValueDisplay>().setValue(c.x, c.y, "HURLEMENT", Color.green, 60);
-        c.HP += attackUsedAttack.effectValue;
+        c.HP += heal;
         print("Affichage Howl");
         print(c.HP);
-        c.myCharClass.basicAttack.effectValue += attackUsedAttack.effectValue;
+        c.myCharClass.basicAttack.effectValue += damageBuff;
         print(c.myCharClass.basicAttack.effectValue);
 
 
     }
+
+    //added by Julien L3L1
+
+    private void HandleInvisible(Character c)
+    {
+        //  SkinnedMeshRenderer skinnedMeshRenderer = c.go.GetComponent<SkinnedMeshRenderer>();
+        //     print(skinnedMeshRenderer.enabled);
+        c.go.SetActive(false);
+        float temps = attackUsedAttack.effectValue;
+        StartCoroutine(DisableInvisible(temps, c));
+   //     skinnedMeshRenderer.enabled = false;
+        print("invisible");
+        
+    }
+
+
+    //added by Julien L3L1
+    IEnumerator DisableInvisible(float temps, Character c)
+        
+    {
+        yield return new WaitForSeconds(temps);
+        c.go.SetActive(true);
+
+    }
+    //added by Julien L3L1
+    private void HandleStorm(Character c)
+    {
+       print("storm");
+      foreach (Character c1 in hexaGrid.charList)
+        {
+            if (c1.team != c.team)
+            {
+                int hpAfterAttack = c1.getHP() - attackUsedAttack.effectValue;
+                c1.setHP(hpAfterAttack);
+            }
+        }
+        
+        print("storm :"+startGameData.charsTeam1[0]);
+
+    }
+
+    //added by Julien L3L1
+    private void EnableShield(Character c)
+    {
+        print("Active shied");
+        c.setShield(true);
+    }
+
+    //added by Julien L3L1
+    private void HandleShield(Character c)
+    {
+        if (c.getShield() == true)
+        {
+            print("protéger");
+
+            c.HP += attackUsedAttack.effectValue;
+            c.setShield(false);
+
+        }
+
+    }
+
+    //added by Julien L3L1
+    // Description : active le sort Rage pendant 15 secondes
+    private void HandleRage(Character c)
+    {
+       
+        GameObject dmgValueDisp = GameObject.Instantiate(damageValueDisplay);
+        dmgValueDisp.GetComponent<DamageValueDisplay>().camera_ = cameraPos;
+        int heal = attackUsedAttack.effectValue;
+        int damageBuff = attackUsedAttack.effectValue;
+        //    int heal = 10;
+        if (heal > c.HPmax - c.HP) heal = c.HPmax - c.HP;
+        dmgValueDisp.GetComponent<DamageValueDisplay>().setValue(c.x, c.y, "Rage", Color.green, 60);
+        c.HP += heal;
+        print("Affichage Rage");
+        print(c.HP);
+        c.myCharClass.basicAttack.effectValue += damageBuff;
+        print(c.myCharClass.basicAttack.effectValue);
+        StartCoroutine(DisableRage(15, c, damageBuff, heal));
+
+    }
+
+    //added by Julien L3L1
+    IEnumerator DisableRage(float temps, Character c,int damageBuff,int heal)
+
+    {
+        yield return new WaitForSeconds(temps);
+        c.HP -= heal;
+        c.myCharClass.basicAttack.effectValue -= damageBuff;
+    }
+
+
+
 
     // Author: MEDILEH Youcef, groupe : L3C1
     // Permet de voler de la vie à un ennemi
@@ -2625,8 +2780,7 @@ public class MainGame : MonoBehaviour
     // - debut reglage du bug de l'initiative
     void nextTurn()
     {
-        // Debug.Log("NEXT TURN");
-
+     
 
         checkAndUpdateBonusControll();
         displayInitiative();
@@ -2650,6 +2804,9 @@ public class MainGame : MonoBehaviour
         if (currentCharControlled.PA <= 0)
         {
             Debug.Log("Le tour de " + currentCharControlled.getName() + " est fini");
+            print("NEXT TURN");
+            print("tour"+tour);
+            tour += 1;
             if (turnCounterDamageOverTimeTEAM1 > 0 || turnCounterDamageOverTimeTEAM2 > 0)
             {
                 turnCounterDamageOverTimeTEAM1--;
@@ -3014,9 +3171,24 @@ public class MainGame : MonoBehaviour
             Initiative.transform.GetChild(i).transform.GetChild(0).GetComponent<Image>().color = (c.team == 0) ? Character.TEAM_1_COLOR : Character.TEAM_2_COLOR;
         }
     }
+
+
+
+
+
     //Display the action buttons on the bottom left
     //Edited by Socrate Louis Deriza L3C1
     //Edited by Julien D'aboville L3L1
+
+    bool IsPointerOver(RectTransform rectangle){
+        Vector2 positonSouris;
+        if(RectTransformUtility.ScreenPointToLocalPointInRectangle(rectangle, Input.mousePosition, null, out positonSouris)){
+            if(rectangle.rect.Contains(positonSouris)){
+                return true;
+            }
+        }
+        return false;
+    }
     void displayActionButtons()
     {
         int iChildrenToSelect;
@@ -3062,39 +3234,83 @@ public class MainGame : MonoBehaviour
 
         //Author : L3C1 CROUZET Oriane, 06/05/2023
         //Tooltip 
-        if (mousePos.x >= 34 && mousePos.x < 34 + 140 * 1.5 && mousePos.y >= Screen.height - 835 && mousePos.y < Screen.height - 835 + 24 * 1.8) //Mouse over move button
-        {
-            UITooltip.SetActive(true);
-            tooltipText.text = "Déplacement de " + CharsDB.list[(int)currentCharControlled.charClass].basePM.ToString() + " cases.";
-        }
-        else if (mousePos.x >= 34 && mousePos.x < 34 + 140 * 1.5 && mousePos.y >= Screen.height - 890 && mousePos.y < Screen.height - 890 + 24 * 1.8) //Mouse over attack button
-        {
+        Transform child_attaque_basique = UIAction.transform.GetChild(0);
+        Transform child_competence1 = UIAction.transform.GetChild(1);
+        Transform child_competence2 = UIAction.transform.GetChild(2);
+        Transform child_competence3 = UIAction.transform.GetChild(3);
+        Transform child_skip = UIAction.transform.GetChild(4);
+        Transform child_mouvement = UIAction.transform.GetChild(5);
+
+
+
+
+
+        if( IsPointerOver(child_attaque_basique.GetComponent<RectTransform>() )){
             UITooltip.SetActive(true);
             tooltipText.text = "Valeur de l'effet : " + CharsDB.list[(int)currentCharControlled.charClass].basicAttack.effectValue.ToString() + "\n Portée : " + CharsDB.list[(int)currentCharControlled.charClass].basicAttack.range.ToString();
         }
-        else if (mousePos.x >= 34 && mousePos.x < 34 + 140 * 1.5 && mousePos.y >= Screen.height - 945 && mousePos.y < Screen.height - 945 + 24 * 1.8) //Mouse over special attack 1
-        {
+        else if( IsPointerOver(child_competence1.GetComponent<RectTransform>() )){
             UITooltip.SetActive(true);
             tooltipText.text = "Valeur de l'effet : " + CharsDB.list[(int)currentCharControlled.charClass].skill_1.effectValue.ToString() + "\n Portée : " + CharsDB.list[(int)currentCharControlled.charClass].skill_1.range.ToString();
         }
-        else if (mousePos.x >= 34 && mousePos.x < 34 + 140 * 1.5 && mousePos.y >= Screen.height - 1000 && mousePos.y < Screen.height - 1000 + 24 * 1.8) //Mouse special attack 2
-        {
+        else if( IsPointerOver(child_competence2.GetComponent<RectTransform>() )){
             UITooltip.SetActive(true);
             tooltipText.text = "Valeur de l'effet : " + CharsDB.list[(int)currentCharControlled.charClass].skill_2.effectValue.ToString() + "\n Portée : " + CharsDB.list[(int)currentCharControlled.charClass].skill_2.range.ToString();
         }
-
-        else if (mousePos.x >= 34 && mousePos.x < 34 + 140 * 1.5 && mousePos.y >= Screen.height - 1055 && mousePos.y < Screen.height - 1055 + 24 * 1.8) //Mouse special attack 3
-        {
+        else if( IsPointerOver(child_competence3.GetComponent<RectTransform>() )){
             UITooltip.SetActive(true);
             tooltipText.text = "Valeur de l'effet : " + CharsDB.list[(int)currentCharControlled.charClass].skill_3.effectValue.ToString() + "\n Portée : " + CharsDB.list[(int)currentCharControlled.charClass].skill_3.range.ToString();
         }
-        else
-        {
+        else if( IsPointerOver(child_mouvement.GetComponent<RectTransform>() )){
+            UITooltip.SetActive(true);
+            tooltipText.text = "deplacement de " + CharsDB.list[(int)currentCharControlled.charClass].basePM.ToString() + " cases.";
+        }
+        else if( IsPointerOver(child_skip.GetComponent<RectTransform>() )){
+            UITooltip.SetActive(true);
+            tooltipText.text = "passe le tour " ;
+        }
+        else{
             UITooltip.SetActive(false);
         }
 
 
+
+
+        //if (mousePos.x >= 34 && mousePos.x < 34 + 140 * 1.5 && mousePos.y >= Screen.height - 835 && mousePos.y < Screen.height - 835 + 24 * 1.8) //Mouse over move button
+        //{
+        //    UITooltip.SetActive(true);
+        //    tooltipText.text = "Déplacement de " + CharsDB.list[(int)currentCharControlled.charClass].basePM.ToString() + " cases.";
+        //}
+        //else if (mousePos.x >= 34 && mousePos.x < 34 + 140 * 1.5 && mousePos.y >= Screen.height - 890 && mousePos.y < Screen.height - 890 + 24 * 1.8) //Mouse over attack button
+        //{
+        //    UITooltip.SetActive(true);
+        //    tooltipText.text = "Valeur de l'effet : " + CharsDB.list[(int)currentCharControlled.charClass].basicAttack.effectValue.ToString() + "\n Portée : " + CharsDB.list[(int)currentCharControlled.charClass].basicAttack.range.ToString();
+        //}
+        //else if (mousePos.x >= 34 && mousePos.x < 34 + 140 * 1.5 && mousePos.y >= Screen.height - 945 && mousePos.y < Screen.height - 945 + 24 * 1.8) //Mouse over special attack 1
+        //{
+        //    UITooltip.SetActive(true);
+        //    tooltipText.text = "Valeur de l'effet : " + CharsDB.list[(int)currentCharControlled.charClass].skill_1.effectValue.ToString() + "\n Portée : " + CharsDB.list[(int)currentCharControlled.charClass].skill_1.range.ToString();
+        //}
+        //else if (mousePos.x >= 34 && mousePos.x < 34 + 140 * 1.5 && mousePos.y >= Screen.height - 1000 && mousePos.y < Screen.height - 1000 + 24 * 1.8) //Mouse special attack 2
+        //{
+        //    UITooltip.SetActive(true);
+        //    tooltipText.text = "Valeur de l'effet : " + CharsDB.list[(int)currentCharControlled.charClass].skill_2.effectValue.ToString() + "\n Portée : " + CharsDB.list[(int)currentCharControlled.charClass].skill_2.range.ToString();
+        //}
+//
+        //else if (mousePos.x >= 34 && mousePos.x < 34 + 140 * 1.5 && mousePos.y >= Screen.height - 1055 && mousePos.y < Screen.height - 1055 + 24 * 1.8) //Mouse special attack 3
+        //{
+        //    UITooltip.SetActive(true);
+        //    tooltipText.text = "Valeur de l'effet : " + CharsDB.list[(int)currentCharControlled.charClass].skill_3.effectValue.ToString() + "\n Portée : " + CharsDB.list[(int)currentCharControlled.charClass].skill_3.range.ToString();
+        //}
+        //else
+        //{
+        //    UITooltip.SetActive(false);
+        //}
+
+
     }
+
+    
 
     //Display the current hovered hexa
     //Author : ?

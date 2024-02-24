@@ -30,6 +30,7 @@ public class StartGameData
 ///<summary>
 ///Functions and methods for the Main menu
 ///</summary>
+// //edited by Julien L3L1
 public class MainMenu : MonoBehaviour
 {
     public static StartGameData startGameData;
@@ -72,7 +73,7 @@ public class MainMenu : MonoBehaviour
     public Toggle toggleConsoleMode;
     public Slider sliderNbGames;
     public GameObject textNbGames;
-
+   
     bool v5Pressed = false;
     bool v4Pressed = false;
     bool v3Pressed = false;
@@ -84,9 +85,9 @@ public class MainMenu : MonoBehaviour
     bool buttonCreditsPressed = false;
     bool buttonGuidePressed = false;
     bool buttonStatsPressed = false;
-    bool[] buttonCharCardsPressed = new bool[9] { false, false, false, false, false, false, false, false,false };//edited by Julien
-    bool[] buttonTeam1Enable = new bool[9] { true, true, true, true, true, true, true, true,true };//edited by Julien
-    bool[] buttonTeam2Enable = new bool[9] { true, true, true, true, true, true, true, true,true };//edited by Julien
+    bool[] buttonCharCardsPressed = new bool[9] { false, false, false, false, false, false, false, false,false };
+    bool[] buttonTeam1Enable = new bool[9] { true, true, true, true, true, true, true, true,true };
+    bool[] buttonTeam2Enable = new bool[9] { true, true, true, true, true, true, true, true,true };
     bool[] buttonTeam1CardsPressed = new bool[5] { false, false, false, false, false };
     bool[] buttonTeam2CardsPressed = new bool[5] { false, false, false, false, false };
     bool buttonBackTeam1Pressed = false;
@@ -118,6 +119,7 @@ public class MainMenu : MonoBehaviour
 
     // Start is called before the first frame update
     //Edited by Socrate Louis Deriza L3C1
+    //edited by Julien L3L1
     void Start()
     {
         mainMenu.SetActive(true);
@@ -139,7 +141,7 @@ public class MainMenu : MonoBehaviour
         buttonCharCards[5].onClick.AddListener(() => buttonCharCardsPressed_(5));
         buttonCharCards[6].onClick.AddListener(() => buttonCharCardsPressed_(6));
         buttonCharCards[7].onClick.AddListener(() => buttonCharCardsPressed_(7)); // ajouter Valkyrie, L3C1 Y,H
-        buttonCharCards[8].onClick.AddListener(() => buttonCharCardsPressed_(8)); //edited by Julien
+        buttonCharCards[8].onClick.AddListener(() => buttonCharCardsPressed_(8)); 
 
         buttonTeam1Cards[0].onClick.AddListener(() => buttonTeam1CardsPressed_(0));
         buttonTeam1Cards[1].onClick.AddListener(() => buttonTeam1CardsPressed_(1));
@@ -530,7 +532,7 @@ public class MainMenu : MonoBehaviour
                             {
                                 charsTeamDisplay.transform.GetChild(0).transform.GetChild(j).GetComponent<RawImage>().texture = charCards[(int)charsTeam[j]];
                             }
-                            charsTeamDisplay.transform.GetChild(0).transform.GetChild(charsTeam.Count).GetComponent<RawImage>().texture = charCards[8];//Edited by L3C1 Y,H
+                            charsTeamDisplay.transform.GetChild(0).transform.GetChild(charsTeam.Count).GetComponent<RawImage>().texture = charCards[9];//Edited by L3C1 Y,H
 
                             testAndDisplayCharRoster();
                         }
@@ -630,7 +632,7 @@ public class MainMenu : MonoBehaviour
 
     //Added by Socrate Louis Deriza L3C1
     //Edited by L3C1 CROUZET Oriane, 19/04/2023
-    void replaceCharacterAccordingTheirRole()
+  /*  void replaceCharacterAccordingTheirRole()
     {
         RectTransform rectTransform = null;
         Vector3 vGuerrier = buttonCharCards[0].transform.position; //GUERRIER
@@ -722,7 +724,27 @@ public class MainMenu : MonoBehaviour
         rectTransform.position = new Vector3(vX, y, z);
 
 
+    }*/
+  //Added by Julien L3L1
+    void replaceCharacterAccordingTheirRole()
+    {
+        
+        Vector3 startPosition = buttonCharCards[0].transform.position; 
+        float gap = 170.0f; 
+
+        for (int i = 0; i < buttonCharCards.Count; i++)
+        {
+          
+            float newX = startPosition.x + i * gap;
+
+        
+            RectTransform rectTransform = buttonCharCards[i].GetComponent<RectTransform>();
+
+            
+            rectTransform.position = new Vector3(newX, startPosition.y, startPosition.z);
+        }
     }
+
 
     void initCharSelectMenu()
     {	//Edited by L3C1 Y,H ,L3L1 Julien

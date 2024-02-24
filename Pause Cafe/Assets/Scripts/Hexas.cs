@@ -300,6 +300,7 @@ public class HexaGrid {
 		{
 			return RoleCharacter.ASSASSINS;
 		}
+
 			return RoleCharacter.COMBATTANTS;
 	}
 

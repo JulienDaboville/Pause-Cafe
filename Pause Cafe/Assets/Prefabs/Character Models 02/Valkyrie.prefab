@@ -10,18 +10,33 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: f3217ca5f5837470eac3ca7eb15f3fca,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f3217ca5f5837470eac3ca7eb15f3fca,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f3217ca5f5837470eac3ca7eb15f3fca,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: f3217ca5f5837470eac3ca7eb15f3fca,
+        type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.4972758
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f3217ca5f5837470eac3ca7eb15f3fca,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.021000028
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f3217ca5f5837470eac3ca7eb15f3fca,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -9.801296
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f3217ca5f5837470eac3ca7eb15f3fca,
         type: 3}
@@ -61,7 +76,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f3217ca5f5837470eac3ca7eb15f3fca,
         type: 3}
       propertyPath: m_Name
-      value: Idle1
+      value: Valkyrie
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: f3217ca5f5837470eac3ca7eb15f3fca,
         type: 3}

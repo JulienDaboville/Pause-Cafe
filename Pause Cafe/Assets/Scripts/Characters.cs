@@ -15,8 +15,8 @@ namespace Characters
 {
 
     //Edited by L3C1 CROUZET Oriane
-    //Edited by L3L1 Julien D'aboville 8/02/2023
-    public enum CharClass : byte { GUERRIER, VOLEUR, ARCHER, MAGE, SOIGNEUR, ENVOUTEUR, VALKYRIE, DRUIDE,BUCHERON };
+    //Edited by L3L1 Julien D'aboville 
+    public enum CharClass : byte { DRUIDE, MAGE, ARCHER, VOLEUR, ENVOUTEUR, SOIGNEUR, GUERRIER, VALKYRIE,BUCHERON };
 
     //New enum RoleCharacter
     //Author : L3C1 LOUIS DERIZA Socrate
@@ -26,12 +26,14 @@ namespace Characters
     //Edited by L3Q1, VALAT Thibault
     public class CharsDB
     {
+        //Edited by L3L1 Julien D'aboville
+        //new AttackEffect CHARGE,HOWL,INVISIBLE
         ///Edited by L3C1 CROUZET Oriane, MEDILEH Youcef
         // new AttackEffect DOOM, SHIELD, HEALTH_STEALING, MASSIVE_HEAL, RANDOM_DAMAGE, FREEZE
         public enum AttackEffect : byte
         {
             DAMAGE, RANDOM_DAMAGE, HEAL, MASSIVE_HEAL, PA_BUFF, DMG_BUFF, STUN, DOOM, SHIELD, HEALTH_STEALING, FREEZE, DAMAGE_OVER_TIME,
-            LIGHNING,CHARGE,HOWL
+            LIGHNING,CHARGE,HOWL, INVISIBLE, STORM, RAGE
         }
         // Attack 
         public class Attack
@@ -98,15 +100,19 @@ namespace Characters
         {
             list = new List<CharacterDB>();
             //int range, int rangeAoE, bool targetsEnemies, bool targetsAllies, bool targetsSelf, AttackEffect attackEffect, int effectValue
-            list.Add(new CharacterDB(17, 2, 3, 7, new Attack(1, 0, true, false, false, AttackEffect.DAMAGE, 3), new Attack(1, 0, true, false, false, AttackEffect.DAMAGE, 5), new Attack(1, 1, true, false, false, AttackEffect.RANDOM_DAMAGE, 3), new Attack(1, 1, true, false, false, AttackEffect.RANDOM_DAMAGE, 3))); // GUERRIER
-            list.Add(new CharacterDB(11, 3, 3, 4, new Attack(1, 0, true, false, false, AttackEffect.DAMAGE, 1), new Attack(2, 0, true, false, false, AttackEffect.DAMAGE, 3), new Attack(1, 0, true, false, false, AttackEffect.HEALTH_STEALING, 2), new Attack(1, 1, true, false, false, AttackEffect.RANDOM_DAMAGE, 3))); // VOLEUR
-            list.Add(new CharacterDB(13, 2, 3, 5, new Attack(6, 0, true, false, false, AttackEffect.DAMAGE, 2), new Attack(8, 0, true, false, false, AttackEffect.DAMAGE, 4), new Attack(15, 7, true, false, false, AttackEffect.DAMAGE, 1),new Attack(1, 1, true, false, false, AttackEffect.RANDOM_DAMAGE, 3))); // ARCHER
-            list.Add(new CharacterDB(10, 2, 3, 5, new Attack(3, 1, true, false, false, AttackEffect.DAMAGE, 2), new Attack(5, 2, true, false, false, AttackEffect.DAMAGE, 3), new Attack(5, 2, true, false, false, AttackEffect.DAMAGE_OVER_TIME, 1), new Attack(1, 1, true, false, false, AttackEffect.RANDOM_DAMAGE, 3))); // MAGE
-            list.Add(new CharacterDB(13, 2, 3, 6, new Attack(4, 0, false, true, false, AttackEffect.HEAL, 3)  , new Attack(5, 1, false, true, false, AttackEffect.HEAL, 3), new Attack(1, 0, false, true, true, AttackEffect.MASSIVE_HEAL, 1), new Attack(1, 1, true, false, false, AttackEffect.RANDOM_DAMAGE, 3))); // SOIGNEUR
-            list.Add(new CharacterDB(11, 2, 3, 6, new Attack(4, 0, false, true, false, AttackEffect.DMG_BUFF,1),new Attack(4, 2, false, true, false, AttackEffect.PA_BUFF, 1), new Attack(1, 1, true, false, false, AttackEffect.DOOM, 2), new Attack(1, 1, true, false, false, AttackEffect.RANDOM_DAMAGE, 3))); // ENVOUTEUR
+            list.Add(new CharacterDB(11, 2, 3, 4, new Attack(2, 0, true, false, false, AttackEffect.DAMAGE, 1), new Attack(3, 0, true, false, false, AttackEffect.DAMAGE, 4), new Attack(1, 0, true, false, false, AttackEffect.FREEZE, 0), new Attack(1, 1, false, true, true, AttackEffect.STORM, 2))); // DRUIDE
+            list.Add(new CharacterDB(10, 2, 3, 5, new Attack(3, 1, true, false, false, AttackEffect.DAMAGE, 2), new Attack(5, 2, true, false, false, AttackEffect.DAMAGE, 3), new Attack(5, 2, true, false, false, AttackEffect.DAMAGE_OVER_TIME, 1), new Attack(1, 1, false, true, true, AttackEffect.SHIELD, 3))); // MAGE
+            list.Add(new CharacterDB(13, 2, 3, 5, new Attack(6, 0, true, false, false, AttackEffect.DAMAGE, 2), new Attack(8, 0, true, false, false, AttackEffect.DAMAGE, 4), new Attack(15, 7, true, false, false, AttackEffect.DAMAGE, 1), new Attack(1, 1, true, false, false, AttackEffect.RANDOM_DAMAGE, 3))); // ARCHER
+            list.Add(new CharacterDB(11, 3, 3, 4, new Attack(1, 0, true, false, false, AttackEffect.DAMAGE, 1), new Attack(2, 0, true, false, false, AttackEffect.DAMAGE, 3), new Attack(1, 0, true, false, false, AttackEffect.HEALTH_STEALING, 2), new Attack(1, 1, false, true, true, AttackEffect.INVISIBLE, 120))); // VOLEUR
+            list.Add(new CharacterDB(11, 2, 3, 6, new Attack(4, 0, false, true, false, AttackEffect.DMG_BUFF, 1), new Attack(4, 2, false, true, false, AttackEffect.PA_BUFF, 1), new Attack(1, 1, true, false, false, AttackEffect.DOOM, 2), new Attack(1, 1, true, false, false, AttackEffect.RANDOM_DAMAGE, 3))); // ENVOUTEUR
+            list.Add(new CharacterDB(13, 2, 3, 6, new Attack(4, 0, false, true, false, AttackEffect.HEAL, 3), new Attack(5, 1, false, true, false, AttackEffect.HEAL, 3), new Attack(1, 0, false, true, true, AttackEffect.MASSIVE_HEAL, 1), new Attack(1, 1, true, false, false, AttackEffect.RANDOM_DAMAGE, 3))); // SOIGNEUR
+            list.Add(new CharacterDB(17, 2, 3, 7, new Attack(1, 0, true, false, false, AttackEffect.DAMAGE, 3), new Attack(1, 0, true, false, false, AttackEffect.DAMAGE, 5), new Attack(1, 1, true, false, false, AttackEffect.RANDOM_DAMAGE, 3), new Attack(1, 1, false, true, true, AttackEffect.RAGE, 2))); // GUERRIER
+
+
+
+
             list.Add(new CharacterDB(14, 2, 4, 4, new Attack(1, 1, true, false, false, AttackEffect.DAMAGE, 2), new Attack(2, 1, true, false, false, AttackEffect.DAMAGE, 3), new Attack(3, 1, true, false, false, AttackEffect.LIGHNING, 4), new Attack(1, 1, true, false, false, AttackEffect.RANDOM_DAMAGE, 3))); // VALKYRIE		
-            list.Add(new CharacterDB(11, 2, 3, 4, new Attack(2, 0, true, false, false, AttackEffect.DAMAGE, 1), new Attack(3, 0, true, false, false, AttackEffect.DAMAGE, 4), new Attack(1, 0, true, false, false, AttackEffect.FREEZE, 0), new Attack(1, 1, true, false, false, AttackEffect.RANDOM_DAMAGE, 3))); // DRUIDE
-            list.Add(new CharacterDB(11, 2, 3, 4, new Attack(10, 0, true, false, false, AttackEffect.DAMAGE, 2), new Attack(1, 0, false, true, false, AttackEffect.HOWL, 4), new Attack(1, 0, true, false, false, AttackEffect.DAMAGE, 5), new Attack(10, 1, false, false, false, AttackEffect.CHARGE, 10))); // BUCHERON
+            list.Add(new CharacterDB(11, 2, 3, 4, new Attack(2, 0, true, false, false, AttackEffect.DAMAGE, 1), new Attack(1, 0, false, true, true, AttackEffect.HOWL, 1), new Attack(1, 0, true, false, false, AttackEffect.DAMAGE, 4), new Attack(10, 1, false, false, false, AttackEffect.CHARGE, 10))); // BUCHERON
 
         }
     }
@@ -142,6 +148,13 @@ namespace Characters
         public bool skillAvailable2;
         public bool doomed;
         public bool freezed;
+
+
+
+       
+        public bool shield;
+
+
         public bool dmgbuff;
         public HexaDirection directionFacing;
         public GameObject go;
@@ -175,6 +188,10 @@ namespace Characters
             this.doomed = false;
             this.freezed = false;
             this.dmgbuff = false;
+
+            this.shield = false;
+
+
 
             this.go = GameObject.Instantiate(characterTemplate, charactersFolder.transform);
             this.go.SetActive(true);
@@ -483,6 +500,19 @@ namespace Characters
         {
             return freezed;
         }
+
+        public void setShield(bool shield)
+        {
+            this.shield = shield;
+        }
+
+        public bool getShield()
+        {
+            return shield;
+
+        }
+
+
         // Author: CROUZET Oriane, group : L3C1
         // Date : 15/03/2023
         //Set the state of freezed
@@ -504,6 +534,9 @@ namespace Characters
             }
             GameObject.Instantiate(characterTemplateModels[(int)this.charClass], go.transform);
         }
+
+      
+
 
         //Set the direction of the character
         //Author : ?
